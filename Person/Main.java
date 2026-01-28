@@ -16,7 +16,7 @@ class Student{
     }
 
 } 
-public class Main {
+public class  {
     public static void main(String[] args) {
         Student student1 = new Student();
         student1.display();

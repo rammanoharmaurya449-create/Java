@@ -24,7 +24,7 @@ public class Main {
         student1.display();
     }
 }
-    class Student {
+    class Student {parameterised
     String name;
     int age;
     int prn;
