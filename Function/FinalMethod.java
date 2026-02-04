@@ -1,14 +1,12 @@
-class Parent {
-    final void show() {
-        System.out.println("This is a final method in Parent class");
-    }
-}
-class  Child extends Parent {
-    
+final class vehicle {
+    final int speedlimt =90;
+    final void displaySpeed() {
+        System.out.println("The speed limit is : " +speedlimt +  "km/h");
+    }    
 }
 public class FinalMethod {
-    public static void main(String[] args) {
-        Child c = new Child();
-        c.show();
+    public static void main(String args[]){
+        vehicle v=new vehicle();
+        v.displaySpeed();
     }
 }
