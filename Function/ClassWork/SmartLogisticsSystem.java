@@ -1,74 +1,76 @@
-abstract class Transport {
-    String id;
+abstract class Robot {
+    private String batteryId;       
+    protected double chargeLevel;
 
-    Transport(String id) {
-        this.id = id;
+    public Robot(String batteryId, double chargeLevel) {
+        this.batteryId = batteryId;
+        this.chargeLevel = chargeLevel;
     }
 
-    abstract void dispatch();
-}
-
-interface GPS {
-    void getCoordinates();
-
-    default void pingServer() {
-        System.out.println("Status: Online...");
-    }
-}
-
-interface Autonomous {
-    void selfNavigate();
-}
-
-
-class Truck extends Transport {
-
-    Truck(String id) {
-        super(id);
+    public String getBatteryId() {
+        return batteryId;
     }
 
-    void dispatch() {
-        System.out.println("Truck " + id + " leaving warehouse by road...");
+
+    public void reportStatus() {
+        System.out.println("Battery ID: " + batteryId + ", Charge: " + chargeLevel + "%");
     }
+
+
+    public abstract void performTask();
 }
 
-class DeliveryDrone extends Transport implements GPS, Autonomous {
 
-    DeliveryDrone(String id) {
-        super(id);
+class DroneRobot extends Robot {
+
+    public DroneRobot(String batteryId, double chargeLevel) {
+        super(batteryId, chargeLevel);
     }
 
     @Override
-    void dispatch() {
-        System.out.println("Drone " + id + " taking off...");
+    public void performTask() {
+        if (chargeLevel < 15) {
+            System.out.println("Drone " + getBatteryId() + ": Low battery!");
+            return;
+        }
+
+        chargeLevel -= 15;
+        System.out.println("Drone " + getBatteryId() + " completed task at 2x speed.");
+    }
+}
+
+
+class GroundRobot extends Robot {
+
+    public GroundRobot(String batteryId, double chargeLevel) {
+        super(batteryId, chargeLevel);
     }
 
     @Override
-    public void getCoordinates() {
-        System.out.println("Drone " + id + " coordinates: [12.9716, 77.5946]");
-    }
+    public void performTask() {
+        if (chargeLevel < 5) {
+            System.out.println("GroundRobot " + getBatteryId() + ": Low battery!");
+            return;
+        }
 
-    @Override
-    public void selfNavigate() {
-        System.out.println("Drone " + id + " navigating autonomously...");
+        System.out.println("GroundRobot " + getBatteryId() + ": Surface check done.");
+        chargeLevel -= 5;
+        System.out.println("GroundRobot " + getBatteryId() + " completed task.");
     }
 }
 public class SmartLogisticsSystem {
     public static void main(String[] args) {
 
-        Transport t = new DeliveryDrone("D101");
-        t.dispatch();
+        Robot[] fleet = {
+            new DroneRobot("D-1", 20.0),
+            new GroundRobot("G-5", 10.0),
+            new DroneRobot("D-2", 10.0)
+        };
 
-        GPS g = new DeliveryDrone("D1U1");
-        g.pingServer();
-
-        Transport truck = new Truck("T202");
-
-        if (truck instanceof GPS) {
-            GPS gpsTruck = (GPS) truck;
-            gpsTruck.getCoordinates();
-        } else {
-            System.out.println("Truck is not GPS enabled (No action)");
+        for (Robot r : fleet) {
+            r.performTask();   
+            r.reportStatus();
+            System.out.println();
         }
     }
 }
